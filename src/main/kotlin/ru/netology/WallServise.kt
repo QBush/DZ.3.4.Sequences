@@ -45,7 +45,7 @@ object WallServise {
     }
 
     fun update(currentPost: Post): Boolean {
-        for (i in 1..posts.size) {
+        for (i in 1 until posts.size) {
             if (posts[i].id == currentPost.id) {
                 posts[i] = currentPost.copy(id = posts[i].id, date = posts[i].date)
                 return true
