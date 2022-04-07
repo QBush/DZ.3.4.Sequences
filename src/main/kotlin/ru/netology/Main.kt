@@ -42,7 +42,7 @@ fun main() {
     println(NotesServise.add("123", "321"))
     println(NotesServise.add("123", "321"))
     println(NotesServise.add("123", "321"))
-
+    println(NotesServise.add("123", "321"))
     println(NotesServise.createComment(1, "раз, два, три"))
     println(NotesServise.editComment(1, "100 101 102"))
     println(NotesServise.edit(1, "one two free"))
@@ -53,4 +53,5 @@ fun main() {
         println(note)
     }
 
+    print(NotesServise.get("1,2,3,4,5,6,7,8", 30))
 }

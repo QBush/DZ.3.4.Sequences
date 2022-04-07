@@ -12,7 +12,8 @@ data class Comment(
     val replyToUser: Int = 0,
     val replyToComment: Int = 0,
     val attachments: Attachments? = null,
-    var isDeleted: Boolean = false
+    var isDeleted: Boolean = false,
+    val noteId: Int = 0
 ) {
     val commentId: Int = ++commentCount
 

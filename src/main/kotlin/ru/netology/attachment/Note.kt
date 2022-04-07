@@ -22,7 +22,7 @@ data class Note(
     }
 
     override fun toString(): String {
-        return "Заметк: Id: $noteId, title: $title, text: $text"
+        return "Заметка: Id: $noteId, title: $title, text: $text"
     }
 }
 

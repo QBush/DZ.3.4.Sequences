@@ -6,7 +6,7 @@ import kotlin.collections.*
 object NotesServise {
     var notes: MutableSet<Note> = HashSet()
     var comments: MutableSet<Comment> = HashSet()
-    // TODO переделать в Мапу массивы и производить поиск по ключу - id вместо перебора
+    // TODO сделать метод, который быстро ищет в HashSet
     // TODO Сделать переменные в отдельном классе от 0 до 3-х
 
 
@@ -18,16 +18,12 @@ object NotesServise {
     }
 
     fun createComment(noteId: Int, message: String, replyTo: Int = 0, ownerId: Int = 0): Int {
-        val comment = Comment(text = message)
-        for (note in notes) {
-            if (note.noteId == noteId) {
-                if (note.isDeleted) throw NoteIsNotFoundExeption()
-                comments.add(comment)
-                return comment.commentId
-            }
-        }
-        throw NoteNotFoundException()
+        val comment = Comment(text = message, noteId = noteId)
+        if (getById(noteId).isDeleted) throw NoteIsNotFoundExeption()
+        comments.add(comment)
+        return comment.commentId
     }
+
 
     fun delete(noteId: Int): Boolean {
         for (note in notes) {
@@ -75,19 +71,30 @@ object NotesServise {
     }
 
     // TODO реализовать сортировку по дате в отдельном методе
-    fun get(noteIds: String, count: Int, sort: Int = 0, userId: Int = 0): MutableList<Note> {
-        val noteIdListString = noteIds.split(",")
-        var noteIdListInt = MutableList(noteIdListString.size) { noteIdListString[it].toInt() }
+    // TODO сохранить интервал в отдельной переменной
+    fun get(noteIds: String, count: Int = 20, sort: Int = 0, userId: Int = 0): MutableList<Note>? {
+        if (count !in 1..100) throw CountExecption()
+        var noteIdListString = noteIds.split(",")
+        var noteIdListInt = MutableList(noteIdListString.size) {
+            try {
+                noteIdListString[it].toInt()
+            } catch (e: NumberFormatException) {
+                println("Неверный формат ввода ID, должны быть разделены только запятыми")
+                return null
+            }
+        }
         var noteList = mutableListOf<Note>()
-        while (!noteIdListInt.isEmpty())
+        while (noteIdListInt.isNotEmpty()) {
             for (note in notes) {
                 if (note.noteId == noteIdListInt.last()) {
-                    noteIdListInt.removeLast()
                     noteList.add(note)
                 }
             }
+            noteIdListInt.removeLast()
+        }
         return noteList
     }
+
 
     fun getById(noteId: Int): Note {
         for (note in notes) {
@@ -96,5 +103,28 @@ object NotesServise {
             }
         }
         throw NoteIsNotFoundExeption()
+    }
+
+    // TODO реализовать сортировку по дате в отдельном методе
+    // TODO сохранить интервал в отдельной переменной
+    fun getComments(noteId: Int, ownerID: Int, sort: Int = 0, count: Int = 20): List<Comment> {
+        if (count !in 1..100) throw CountExecption()
+        val commentsList = mutableListOf<Comment>()
+        for (comment in comments) {
+            if (comment.noteId == noteId && !comment.isDeleted) commentsList += comment
+        }
+        return commentsList
+    }
+
+    fun restoreComment(commentId: Int, ownerId: Int = 0): Boolean {
+        for (comment in comments) {
+            if (comment.commentId == commentId) {
+                if (comment.isDeleted) {
+                    comment.isDeleted = false
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
