@@ -1,17 +1,28 @@
 package ru.netology
 
-import ru.netology.attachment.Attachments
+import ru.netology.attachment.*
 
 private var commentCount = 0
 
-class Comment(
+data class Comment(
     val fromId: Int = 0,
     val date: Int = 0,
-    val text: String? = null,
+    var text: String? = null,
     val donut: String? = null,
     val replyToUser: Int = 0,
     val replyToComment: Int = 0,
-    val attachments: Attachments? = null
+    val attachments: Attachments? = null,
+    var isDeleted: Boolean = false
 ) {
     val commentId: Int = ++commentCount
+
+    override fun equals(other: Any?) = other is Comment && (commentId == other.commentId)
+
+    override fun hashCode(): Int {
+        return commentId.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Комментарий: Id: $commentId, text: $text"
+    }
 }

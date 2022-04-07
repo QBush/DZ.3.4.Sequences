@@ -5,7 +5,8 @@ class Comments(
     val canPost: Boolean,
     val groupsCanPost: Boolean,
     val canClose: Boolean,
-    val canOpen: Boolean
+    val canOpen: Boolean,
+    var isDeleted: Boolean = false
 ) {
 
 }

@@ -1,8 +1,7 @@
 package ru.netology
 
 import ru.netology.attachment.Attachments
-
-private var postCount = 0
+import ru.netology.attachment.Note
 
 data class Post(
     var id: Int = 0,
@@ -33,5 +32,6 @@ data class Post(
     val donut: Donut?,
     val postponedId: String,
     ) {
-//    var id = ++postCount
+
+    override fun equals(other: Any?) = other is Post && (id == other.id)
 }

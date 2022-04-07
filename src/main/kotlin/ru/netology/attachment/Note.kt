@@ -7,8 +7,23 @@ private var noteCount = 0
 data class Note(
     var title: String,
     var text: String,
-    var comments: MutableList<Comment> = mutableListOf(),
-    val isDeleted: Boolean = false
+    val privacy: Int = 3,
+    val commentPrivacy: Int = 3,
+    val date: Int = 20220407,
+    var isDeleted: Boolean = false
 ) {
+
     val noteId: Int = ++noteCount
+
+    override fun equals(other: Any?) = other is Note && (this.noteId == other.noteId)
+
+    override fun hashCode(): Int {
+        return noteId.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Заметк: Id: $noteId, title: $title, text: $text"
+    }
 }
+
+
