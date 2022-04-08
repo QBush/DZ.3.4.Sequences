@@ -1,18 +1,17 @@
 package ru.netology
 
 import ru.netology.attachment.*
+import java.util.*
 import kotlin.collections.*
 
+val COUNT_VIEW = 1..100
+
 object NotesServise {
-    var notes: MutableSet<Note> = HashSet()
-    var comments: MutableSet<Comment> = HashSet()
-    // TODO сделать метод, который быстро ищет в HashSet
-    // TODO Сделать переменные в отдельном классе от 0 до 3-х
+    var notes: MutableSet<Note> = TreeSet()
+    var comments: MutableSet<Comment> = TreeSet()
 
-
-    fun add(title: String, text: String, privacy: Int = 3, commentPrivacy: Int = 3): Int {
-        if ((privacy !in 0..3) || (commentPrivacy !in 0..3)) throw NotePrivacyNumberException()
-        val note = Note(title = title, text = text, privacy = privacy, commentPrivacy = commentPrivacy)
+    fun add(title: String, text: String): Int {
+        val note = Note(title = title, text = text)
         notes += note
         return note.noteId
     }
@@ -21,6 +20,7 @@ object NotesServise {
         val comment = Comment(text = message, noteId = noteId)
         if (getById(noteId).isDeleted) throw NoteIsNotFoundExeption()
         comments.add(comment)
+        (getById(noteId).commentsCount)++
         return comment.commentId
     }
 
@@ -28,30 +28,31 @@ object NotesServise {
     fun delete(noteId: Int): Boolean {
         for (note in notes) {
             if (note.noteId == noteId) {
-                if (!note.isDeleted) {
-                    note.isDeleted = true
-                    return true
-                }
+                if (note.isDeleted) if (note.isDeleted) throw NoteIsNotFoundExeption()
+                note.isDeleted = true
+                return true
             }
         }
         throw NoteIsNotFoundExeption()
     }
 
-    fun deleteComment(commentId: Int): Boolean {
+
+    fun deleteComment(commentId: Int, ownerId: Int = 0): Boolean {
         for (comment in comments) {
             if (comment.commentId == commentId) {
-                if (!comment.isDeleted) {
-                    comment.isDeleted = true
-                    return true
-                }
+                if (comment.isDeleted) throw CommentIsNotFoundExeption()
+                comment.isDeleted = true
+                return true
             }
         }
         throw CommentIsNotFoundExeption()
     }
 
+
     fun edit(noteId: Int, title: String? = null, text: String? = null): Boolean {
         for (note in notes) {
             if (note.noteId == noteId) {
+                if (note.isDeleted) if (note.isDeleted) throw NoteIsNotFoundExeption()
                 if (title != null) note.title = title
                 if (text != null) note.text = text
                 return true
@@ -63,6 +64,7 @@ object NotesServise {
     fun editComment(commentId: Int, massage: String, ownerId: Int = 0): Boolean {
         for (comment in comments) {
             if (comment.commentId == commentId) {
+                if (comment.isDeleted) throw CommentIsNotFoundExeption()
                 comment.text = massage
                 return true
             }
@@ -70,10 +72,8 @@ object NotesServise {
         throw CommentIsNotFoundExeption()
     }
 
-    // TODO реализовать сортировку по дате в отдельном методе
-    // TODO сохранить интервал в отдельной переменной
-    fun get(noteIds: String, count: Int = 20, sort: Int = 0, userId: Int = 0): MutableList<Note>? {
-        if (count !in 1..100) throw CountExecption()
+    fun get(noteIds: String, count: Int = 20, sort: Int = 1, userId: Int = 0): List<Note>? {
+        if (count !in COUNT_VIEW) throw CountExeption()
         var noteIdListString = noteIds.split(",")
         var noteIdListInt = MutableList(noteIdListString.size) {
             try {
@@ -92,11 +92,15 @@ object NotesServise {
             }
             noteIdListInt.removeLast()
         }
-        return noteList
+        if (sort == 0) {
+            return (noteList.sortedBy { it.date })
+        } else {
+            return (noteList.sortedByDescending { it.date })
+        }
+
     }
 
-
-    fun getById(noteId: Int): Note {
+    fun getById(noteId: Int, ownerId: Int = 0): Note {
         for (note in notes) {
             if (note.noteId == noteId) {
                 return note
@@ -105,15 +109,17 @@ object NotesServise {
         throw NoteIsNotFoundExeption()
     }
 
-    // TODO реализовать сортировку по дате в отдельном методе
-    // TODO сохранить интервал в отдельной переменной
-    fun getComments(noteId: Int, ownerID: Int, sort: Int = 0, count: Int = 20): List<Comment> {
-        if (count !in 1..100) throw CountExecption()
+    fun getComments(noteId: Int, ownerID: Int, sort: Int = 1, count: Int = 20): List<Comment> {
+        if (count !in COUNT_VIEW) throw CountExeption()
         val commentsList = mutableListOf<Comment>()
         for (comment in comments) {
             if (comment.noteId == noteId && !comment.isDeleted) commentsList += comment
         }
-        return commentsList
+        if (sort == 0) {
+            return (commentsList.sortedBy { it.date })
+        } else {
+            return (commentsList.sortedByDescending { it.date })
+        }
     }
 
     fun restoreComment(commentId: Int, ownerId: Int = 0): Boolean {
@@ -122,9 +128,18 @@ object NotesServise {
                 if (comment.isDeleted) {
                     comment.isDeleted = false
                     return true
+                } else {
+                    println("Нельзя возродить то, что еще живо (Comment)")
+                    return false
                 }
             }
         }
-        return false
+        throw CommentIsNotFoundExeption()
     }
+
+    fun clear() {
+        notes.clear()
+        comments.clear()
+    }
+
 }
