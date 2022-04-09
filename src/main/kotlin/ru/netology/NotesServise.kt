@@ -4,11 +4,11 @@ import ru.netology.attachment.*
 import java.util.*
 import kotlin.collections.*
 
-val COUNT_VIEW = 1..100
+private val COUNT_VIEW = 1..100
 
 object NotesServise {
-    var notes: MutableSet<Note> = TreeSet()
-    var comments: MutableSet<Comment> = TreeSet()
+    internal var notes: MutableSet<Note> = HashSet()
+    private var comments: MutableSet<Comment> = HashSet()
 
     fun add(title: String, text: String): Int {
         val note = Note(title = title, text = text)

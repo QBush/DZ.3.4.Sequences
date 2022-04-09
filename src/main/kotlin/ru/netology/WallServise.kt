@@ -41,7 +41,7 @@ object WallServise {
                 return true
             }
         }
-        throw CommentNotFoundException()
+        throw CommentIsNotFoundExeption()
     }
 
     fun update(currentPost: Post): Boolean {
@@ -56,6 +56,7 @@ object WallServise {
 
     fun clear() {
         posts.clear()
+        comments.clear()
         currentPostID = 0
     }
 }

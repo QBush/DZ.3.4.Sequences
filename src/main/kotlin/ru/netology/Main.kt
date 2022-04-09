@@ -39,19 +39,23 @@ fun main() {
 //            attachment = attachment1
 //        )
 //    )
-    println(NotesServise.add("123", "321"))
-    println(NotesServise.add("123", "321"))
-    println(NotesServise.add("123", "321"))
-    println(NotesServise.add("123", "321"))
-    println(NotesServise.createComment(1, "раз, два, три"))
-    println(NotesServise.editComment(1, "100 101 102"))
-    println(NotesServise.edit(1, "one two free"))
-    println(NotesServise.delete(1))
-    println(NotesServise.deleteComment(1))
 
-    for (note in NotesServise.notes) {
-        println(note)
-    }
+    NotesServise.add("заголовок", "заметка")
+    NotesServise.createComment(1, "Что-то")
+    NotesServise.editComment(2, "что-то другое")
 
-    print(NotesServise.get("1,2,3,4,5,6,7,8", 30))
+//    println(NotesServise.add("123", "321"))
+//    println(NotesServise.add("123", "321"))
+//    println(NotesServise.add("123", "321"))
+//    println(NotesServise.add("123", "321"))
+//    println(NotesServise.createComment(1, "раз, два, три"))
+//    println(NotesServise.editComment(1, "100 101 102"))
+//    println(NotesServise.edit(1, "one two free"))
+//    println(NotesServise.delete(1))
+//    println(NotesServise.deleteComment(1))
+
+//    for (note in NotesServise.notes) {
+//        println(note)
+//    }
+
 }
