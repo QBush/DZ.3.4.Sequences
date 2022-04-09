@@ -2,6 +2,7 @@ package ru.netology
 
 import org.junit.Assert.*
 import org.junit.Test
+import ru.netology.attachment.noteCount
 
 
 class WallServiseTest {
@@ -23,11 +24,11 @@ class WallServiseTest {
         attachment = null
     )
 
-
     @Test
     fun addPostTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
+        noteCount = 0
         val result = WallServise.addPost(post1)
         assertNotEquals(result.id, 0)
 
@@ -36,7 +37,7 @@ class WallServiseTest {
     @Test
     fun updateTestTrue() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.addPost(post2)
         val result = WallServise.update(
@@ -57,7 +58,7 @@ class WallServiseTest {
     @Test
     fun updateTestFalse() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.addPost(post2)
         val result = WallServise.update(
@@ -76,7 +77,7 @@ class WallServiseTest {
     @Test
     fun createCommentTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         var result = WallServise.createComment(Comment(1), 1)
         assertTrue(result)
@@ -85,7 +86,7 @@ class WallServiseTest {
     @Test(expected = PostNotFoundException::class)
     fun createCommentWithExceptionTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.createComment(Comment(1), 2)
 
@@ -94,7 +95,7 @@ class WallServiseTest {
     @Test
     fun reportCommentTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.addPost(post2)
         WallServise.createComment(Comment(1), 1)
@@ -106,7 +107,7 @@ class WallServiseTest {
     @Test(expected = CommentIsNotFoundExeption::class)
     fun reportCommentThereIsNoCommentTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.addPost(post2)
         WallServise.createComment(Comment(1), 1)
@@ -117,7 +118,7 @@ class WallServiseTest {
     @Test(expected = ReportsReasonNumberException::class)
     fun reportCommentThereIsNoReasonTest() {
         WallServise.clear()
-        NotesServise.clear()
+        commentCount = 0
         WallServise.addPost(post1)
         WallServise.addPost(post2)
         WallServise.createComment(Comment(1), 1)

@@ -2,7 +2,7 @@ package ru.netology
 
 import ru.netology.attachment.*
 
-private var commentCount = 0
+public var commentCount = 0
 
 data class Comment(
     val fromId: Int = 0,

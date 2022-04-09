@@ -2,7 +2,7 @@ package ru.netology.attachment
 
 import ru.netology.Comment
 
-private var noteCount = 0
+public var noteCount = 0
 
 data class Note(
     var title: String,
