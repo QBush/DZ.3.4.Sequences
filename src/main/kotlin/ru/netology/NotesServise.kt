@@ -28,7 +28,7 @@ object NotesServise {
     fun delete(noteId: Int): Boolean {
         for (note in notes) {
             if (note.noteId == noteId) {
-                if (note.isDeleted) if (note.isDeleted) throw NoteIsNotFoundExeption()
+                if (note.isDeleted) throw NoteIsNotFoundExeption()
                 note.isDeleted = true
                 return true
             }
@@ -52,7 +52,7 @@ object NotesServise {
     fun edit(noteId: Int, title: String? = null, text: String? = null): Boolean {
         for (note in notes) {
             if (note.noteId == noteId) {
-                if (note.isDeleted) if (note.isDeleted) throw NoteIsNotFoundExeption()
+                if (note.isDeleted) throw NoteIsNotFoundExeption()
                 if (title != null) note.title = title
                 if (text != null) note.text = text
                 return true
@@ -86,17 +86,11 @@ object NotesServise {
         var noteList = mutableListOf<Note>()
         while (noteIdListInt.isNotEmpty()) {
             for (note in notes) {
-                if (note.noteId == noteIdListInt.last()) {
-                    noteList.add(note)
-                }
+                if (note.noteId == noteIdListInt.last() && !note.isDeleted) noteList.add(note)
             }
             noteIdListInt.removeLast()
         }
-        if (sort == 0) {
-            return (noteList.sortedBy { it.date })
-        } else {
-            return (noteList.sortedByDescending { it.date })
-        }
+        return noteList
 
     }
 
@@ -109,17 +103,17 @@ object NotesServise {
         throw NoteIsNotFoundExeption()
     }
 
-    fun getComments(noteId: Int, ownerID: Int, sort: Int = 1, count: Int = 20): List<Comment> {
+    fun getComments(noteId: Int, count: Int = 20, ownerID: Int = 0, sort: Int = 1): List<Comment> {
         if (count !in COUNT_VIEW) throw CountExeption()
+        if (getById(noteId).isDeleted) throw NoteIsNotFoundExeption()
         val commentsList = mutableListOf<Comment>()
+        var i = 0
         for (comment in comments) {
             if (comment.noteId == noteId && !comment.isDeleted) commentsList += comment
+            i++
+            if (i == count) return commentsList
         }
-        if (sort == 0) {
-            return (commentsList.sortedBy { it.date })
-        } else {
-            return (commentsList.sortedByDescending { it.date })
-        }
+        return commentsList
     }
 
     fun restoreComment(commentId: Int, ownerId: Int = 0): Boolean {
@@ -128,12 +122,10 @@ object NotesServise {
                 if (comment.isDeleted) {
                     comment.isDeleted = false
                     return true
-                } else {
-                    println("Нельзя возродить то, что еще живо (Comment)")
-                    return false
+                } else throw CommentIsNotDeletedExeption()
                 }
             }
-        }
+
         throw CommentIsNotFoundExeption()
     }
 

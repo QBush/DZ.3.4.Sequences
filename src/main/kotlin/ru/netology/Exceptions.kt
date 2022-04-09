@@ -12,3 +12,5 @@ class CommentIsNotFoundExeption: RuntimeException("Комментарий отс
 
 class CountExeption: RuntimeException("Поле count введено некорректно, число должно быть положительным," +
          " максимальное значение 100")
+
+class CommentIsNotDeletedExeption : RuntimeException("Комментарий не удален")

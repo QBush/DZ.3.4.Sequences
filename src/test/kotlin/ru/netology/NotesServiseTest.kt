@@ -113,54 +113,16 @@ class NotesServiseTest {
         NotesServise.editComment(1, "что-то другое")
     }
 
-    @Test
-    fun getMintoMaxTest() {
-        var expected = mutableListOf<Note>()
-        expected[0].date = 20220407
-        expected[1].date = 20220408
-        expected[2].date = 20220409
-
-        NotesServise.add("заголовок", "заметка")
-        NotesServise.add("заголовок", "заметка")
-        NotesServise.add("заголовок", "заметка")
-        var dateChanger = 0
-        for (note in NotesServise.notes) {
-            note.date = 20220407 + dateChanger
-            dateChanger++
-        }
-        val result = NotesServise.get("1,2,3", 2, 0)
-        assertEquals(expected, result)
-    }
-
-    @Test
-    fun getMaxtoMinTest() {
-        var expected = mutableListOf<Note>()
-        expected[0].date = 20220409
-        expected[1].date = 20220408
-        expected[2].date = 20220407
-        NotesServise.add("заголовок", "заметка")
-        NotesServise.add("заголовок", "заметка")
-        NotesServise.add("заголовок", "заметка")
-        var dateChanger = 0
-        for (note in NotesServise.notes) {
-            note.date = 20220409 - dateChanger
-            dateChanger++
-        }
-        val result = NotesServise.get("1,2,3", 2, 1)
-
-        assertEquals(expected, result)
-    }
-
     @Test(expected = CountExeption::class)
     fun getCountExeptionTest() {
         NotesServise.add("заголовок", "заметка")
-        NotesServise.get("1,2",101)
+        NotesServise.get("1,2", 101)
     }
 
     @Test
     fun getNumberFormatExeptionTest() {
         NotesServise.add("заголовок", "заметка")
-        val result = NotesServise.get("1 2",2)
+        val result = NotesServise.get("1 2", 2)
         assertEquals(null, result)
     }
 
@@ -178,11 +140,43 @@ class NotesServiseTest {
         NotesServise.getById(2)
     }
 
-    @Test
-    fun getCommentsTest() {
+    @Test(expected = CountExeption::class)
+    fun getCommentsCountExeptionTest() {
+        NotesServise.getComments(1, 101)
+
+    }
+
+    @Test(expected = NoteIsNotFoundExeption::class)
+    fun getCommentsNoteIsNotFoundTest() {
+        NotesServise.add("заголовок", "заметка")
+        (NotesServise.getById(1)).isDeleted = true
+        NotesServise.getComments(2, 20)
     }
 
     @Test
     fun restoreCommentTest() {
+        NotesServise.add("заголовок", "заметка")
+        NotesServise.createComment(1, "Что-то")
+        NotesServise.deleteComment(1)
+        val result = NotesServise.restoreComment(1)
+        assertTrue(result)
+    }
+
+    @Test
+    fun restoreCommentIsNotDeletedTest() {
+        NotesServise.add("заголовок", "заметка")
+        NotesServise.createComment(1, "Что-то")
+        NotesServise.deleteComment(1)
+        val result = NotesServise.restoreComment(1)
+        assertTrue(result)
+    }
+
+    @Test
+    fun restoreCommentIsNotFoundTest() {
+        NotesServise.add("заголовок", "заметка")
+        NotesServise.createComment(1, "Что-то")
+        NotesServise.deleteComment(1)
+        val result = NotesServise.restoreComment(1)
+        assertTrue(result)
     }
 }
