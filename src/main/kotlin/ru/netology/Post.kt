@@ -1,7 +1,7 @@
 package ru.netology
 
+import ru.netology.Different.*
 import ru.netology.attachment.Attachments
-import ru.netology.attachment.Note
 
 data class Post(
     var id: Int = 0,

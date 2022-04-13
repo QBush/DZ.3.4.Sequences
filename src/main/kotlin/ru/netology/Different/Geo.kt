@@ -1,4 +1,4 @@
-package ru.netology
+package ru.netology.Different
 
 class Geo(
     val type : String,

@@ -1,5 +1,7 @@
 package ru.netology
 
+import ru.netology.Chat.ChatService
+
 
 fun main() {
 
@@ -40,9 +42,9 @@ fun main() {
 //        )
 //    )
 
-    NotesServise.add("заголовок", "заметка")
-    NotesServise.createComment(1, "Что-то")
-    NotesServise.editComment(2, "что-то другое")
+//    NotesServise.add("заголовок", "заметка")
+//    NotesServise.createComment(1, "Что-то")
+//    NotesServise.editComment(2, "что-то другое")
 
 //    println(NotesServise.add("123", "321"))
 //    println(NotesServise.add("123", "321"))

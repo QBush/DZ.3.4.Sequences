@@ -132,6 +132,8 @@ object NotesServise {
     fun clear() {
         notes.clear()
         comments.clear()
+        commentCount = 0
+        noteCount = 0
     }
 
 }

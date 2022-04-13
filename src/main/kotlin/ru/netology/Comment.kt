@@ -1,8 +1,9 @@
 package ru.netology
 
+import ru.netology.Different.Placeholder
 import ru.netology.attachment.*
 
-public var commentCount = 0
+internal var commentCount = 0
 
 data class Comment(
     val fromId: Int = 0,
@@ -27,3 +28,8 @@ data class Comment(
         return "Комментарий: Id: $commentId, text: $text"
     }
 }
+
+
+
+
+

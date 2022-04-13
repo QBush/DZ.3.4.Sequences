@@ -58,5 +58,6 @@ object WallServise {
         posts.clear()
         comments.clear()
         currentPostID = 0
+        commentCount = 0
     }
 }
