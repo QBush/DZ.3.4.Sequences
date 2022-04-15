@@ -9,12 +9,11 @@ object ChatService {
 
     fun getUnreadChatsCount(userId: Int): Int {
         val usersChats = getChatsByUserID(userId)
-        val unreadChatsCount = usersChats.count { it ->
-            it.massages.any {
-                !it.readed && it.recipientId == userId
+            .filter { it ->
+                it.massages.any { !it.readed && it.recipientId == userId }
             }
-        }
-        return unreadChatsCount
+            .size
+        return usersChats
     }
 
     fun getChatsByUserID(userId: Int): List<Chat> {
@@ -33,24 +32,29 @@ object ChatService {
 
     fun getMassagesFromChat(userID: Int, chatId: Int, fromMassageId: Int, count: Int): List<Massage> {
         val chat = chats.find { it.chatId == chatId } ?: throw ChatIsNotFoundExeption()
-        val unreadMassages = chat.massages
-            .filter { it.massageId >= fromMassageId }
+        return chat.massages
+            .dropWhile { it.massageId < fromMassageId }
+            .filter { it.recipientId == userID }
             .take(count)
-        unreadMassages.filter { it.recipientId == userID }
-            .forEach { it.readed = true }
-        return unreadMassages
+            .onEach { it.readed = true }
     }
 
     private fun createChat(from: Int, to: Int): Chat {
-        try {
-            return getChatByTwoUsers(from, to)
-        } catch (e: ChatIsNotFoundExeption) {
-            val chat = Chat(Pair(from, to))
-            println("Создан новый чат")
-            chats.add(chat)
-            return chat
-        }
+        val chat =            .let { Chat(Pair(from, to)) }
+        chats.add(chat)
+
+
     }
+
+
+//        try {
+//            return getChatByTwoUsers(from, to)
+//        } catch (e: ChatIsNotFoundExeption) {
+//            val chat = Chat(Pair(from, to))
+//            println("Создан новый чат")
+//            chats.add(chat)
+//            return chat
+//        }
 
 
     fun createMassage(from: Int, to: Int, text: String): Massage {
@@ -64,20 +68,16 @@ object ChatService {
         return massage
     }
 
+
     fun deleteChat(chatId: Int): Boolean {
         return chats.removeIf { it.chatId == chatId }
     }
 
     fun deleteMassage(id: Int): Boolean {
-        val chat = try {
-            chats.first {
-                it.massages.any {
-                    it.massageId == id
-                }
-            }
-        } catch (e: NoSuchElementException) {
-            throw MassageIsNotFoundExeption()
-        }
+        val chat = chats
+            .firstOrNull { chat ->
+                chat.massages.any { it.massageId == id }
+            } ?: throw MassageIsNotFoundExeption()
         chat.massages.removeIf { it.massageId == id }
         if (chat.massages.isEmpty()) chats.remove(chat)
         return true
