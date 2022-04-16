@@ -8,7 +8,7 @@ object ChatService {
     fun getChats() = chats
 
     fun getUnreadChatsCount(userId: Int): Int {
-        val usersChats = getChatsByUserID(userId)
+        val usersChats = getChatByUserID(userId)
             .filter { it ->
                 it.massages.any { !it.readed && it.recipientId == userId }
             }
@@ -16,17 +16,17 @@ object ChatService {
         return usersChats
     }
 
-    fun getChatsByUserID(userId: Int): List<Chat> {
-        val chats = chats.filter { it.UsersIdFromTo.toList().contains(userId) }
+    fun getChatByUserID(userId: Int): List<Chat> {
+        val chats = chats
+            .filter { it.UsersIdFromTo.toList().contains(userId) }
         if (!chats.any()) throw ChatIsNotFoundExeption()
         return chats
     }
 
     fun getChatByTwoUsers(firstId: Int, secondId: Int): Chat {
-        val chat = chats.find {
+        return chats.find {
             it.UsersIdFromTo.toList().contains(firstId) && it.UsersIdFromTo.toList().contains(secondId)
         } ?: throw ChatIsNotFoundExeption()
-        return chat
     }
 
 
@@ -35,27 +35,16 @@ object ChatService {
         return chat.massages
             .dropWhile { it.massageId < fromMassageId }
             .filter { it.recipientId == userID }
-            .take(count)
             .onEach { it.readed = true }
+            .take(count)
     }
 
     private fun createChat(from: Int, to: Int): Chat {
-        val chat =            .let { Chat(Pair(from, to)) }
+        val chat = Chat(Pair(from, to))
+        println("Создан новый чат")
         chats.add(chat)
-
-
+        return chat
     }
-
-
-//        try {
-//            return getChatByTwoUsers(from, to)
-//        } catch (e: ChatIsNotFoundExeption) {
-//            val chat = Chat(Pair(from, to))
-//            println("Создан новый чат")
-//            chats.add(chat)
-//            return chat
-//        }
-
 
     fun createMassage(from: Int, to: Int, text: String): Massage {
         val chat = try {
@@ -64,10 +53,17 @@ object ChatService {
             createChat(from, to)
         }
         val massage = Massage(from, to, text)
+
         chat.massages.add(massage)
+
+//        chats.forEachIndexed { index, it ->
+//            if (it.chatId == chat.chatId) {
+//                chats[index] = chat.copy(massages = (chat.massages + massage) as ArrayList<Massage>)
+//                return@forEachIndexed
+//            }
+//        }
         return massage
     }
-
 
     fun deleteChat(chatId: Int): Boolean {
         return chats.removeIf { it.chatId == chatId }
