@@ -6,10 +6,10 @@ internal var chatsCount = 0
 
 data class Chat (
     val UsersIdFromTo : Pair<Int,Int>,
-    var massages : ArrayList<Massage> = ArrayList(),
-
-    ){
+    var massages: MutableList<Massage> = mutableListOf(),
     val chatId: Int = ++chatsCount
+    ){
+
 
     override fun equals(other: Any?) = other is Chat && (chatId == other.chatId)
 

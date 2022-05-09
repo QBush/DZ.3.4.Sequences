@@ -20,7 +20,7 @@ class ChatServiceTest {
     }
 
     @Test
-    fun getChatsByUserIdTest() {
+    fun ByUserIdTest() {
         ChatService.clear()
         val chat1 = Chat(Pair(1, 2), arrayListOf(Massage(1, 2, "Текст1")))
         val chat2 = Chat(Pair(2, 3), arrayListOf(Massage(2, 3, "Текст2")))
@@ -31,17 +31,17 @@ class ChatServiceTest {
         ChatService.createMassage(1, 2, "Текст1")
         ChatService.createMassage(2, 3, "Текст2")
         ChatService.createMassage(3, 1, "Текст3")
-        val result1 = ChatService.getChatsByUserID(3)
-        val result2 = ChatService.getChatsByUserID(1)
+        val result1 = ChatService.getChatByUserID(3)
+        val result2 = ChatService.getChatByUserID(1)
         assertEquals(expected1, result1)
         assertEquals(expected2, result2)
     }
 
     @Test(expected = ChatIsNotFoundExeption::class)
-    fun getChatsByUserIdChatIsNotFoundTest() {
+    fun ByUserIdChatIsNotFoundTest() {
         ChatService.clear()
         ChatService.createMassage(1, 2, "Текст1")
-        ChatService.getChatsByUserID(3)
+        ChatService.getChatByUserID(3)
     }
 
     @Test
@@ -102,6 +102,7 @@ class ChatServiceTest {
         ChatService.clear()
         val result = ChatService.createMassage(1, 2, "Текст1")
         assertEquals(expected, result)
+        assertEquals(1, ChatService.getChats().first().massages.size )
     }
 
     @Test
@@ -111,6 +112,7 @@ class ChatServiceTest {
         ChatService.clear()
         val result = ChatService.createMassage(1, 2, "Текст2")
         assertEquals(expected, result)
+        assertEquals(1, ChatService.getChats().first().massages.size)
     }
 
     @Test

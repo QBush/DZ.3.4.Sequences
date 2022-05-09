@@ -26,16 +26,11 @@ object NotesServise {
 
 
     fun delete(noteId: Int): Boolean {
-        for (note in notes) {
-            if (note.noteId == noteId) {
-                if (note.isDeleted) throw NoteIsNotFoundExeption()
+        val note = getById(noteId)
+        if (note.isDeleted) throw NoteIsNotFoundExeption()
                 note.isDeleted = true
                 return true
             }
-        }
-        throw NoteIsNotFoundExeption()
-    }
-
 
     fun deleteComment(commentId: Int, ownerId: Int = 0): Boolean {
         for (comment in comments) {
