@@ -3,7 +3,7 @@ package ru.netology.Chat
 import ru.netology.*
 
 object ChatService {
-    private var chats = ArrayList<Chat>()
+    private var chats = mutableListOf<Chat>()
 
     fun getChats() = chats
 
@@ -53,15 +53,13 @@ object ChatService {
             createChat(from, to)
         }
         val massage = Massage(from, to, text)
-
-        chat.massages.add(massage)
-
-//        chats.forEachIndexed { index, it ->
-//            if (it.chatId == chat.chatId) {
-//                chats[index] = chat.copy(massages = (chat.massages + massage) as ArrayList<Massage>)
-//                return@forEachIndexed
-//            }
-//        }
+//        chat.massages.add(massage)
+        chats.forEachIndexed { index, it ->
+            if (it.chatId == chat.chatId) {
+                chats[index] = chat.copy(massages = (chat.massages + massage) as MutableList<Massage>)
+                return@forEachIndexed
+            }
+        }
         return massage
     }
 
